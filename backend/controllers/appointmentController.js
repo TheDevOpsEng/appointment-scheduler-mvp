@@ -9,7 +9,21 @@ exports.createAppointment = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+exports.createAppointment = async (req, res) => {
+  try {
+    const { customerName, serviceType, appointmentDate } = req.body;
 
+    if (!customerName || !serviceType || !appointmentDate) {
+      return res.status(400).json({ error: "Missing required fields." });
+    }
+
+    const appointment = await Appointment.create({ customerName, serviceType, appointmentDate });
+    res.status(201).json(appointment);
+  } catch (error) {
+    console.error(error); // Now you see real backend errors too
+    res.status(400).json({ error: error.message });
+  }
+};
 exports.getAppointments = async (req, res) => {
   try {
     const appointments = await Appointment.findAll();
